@@ -17,7 +17,7 @@ What Our Program Does:
 
 External Assumptions:
 
-	1.
+	1. update readme
 
 Our Team:
 
