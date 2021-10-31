@@ -8,12 +8,22 @@
 #include "vmemory.h"
 
 #define OUT_TLB "../bin/tlb_out.txt"
+#define VIR_ADDR "../bin/virtual.txt"
+
+#define FST_PT "../bin/first_pt.txt"
+#define SEC_PT "../bin/second_pt.txt"
 
 bool FIFO_policy = true;
 int **cr3;
 //
 // You can declare global variables necessary for your TLB implementation here
 //
+
+int offset;
+int first_addr;
+int second_addr;
+int pt2_ptr;
+unsigned int pt1_ptr;
 
 //
 // More static helper functions can be implemented here
@@ -29,9 +39,14 @@ void initialize_vmanager(int policy)
 		FIFO_policy = false;
 	// Set base pointer to page table
 	cr3 = get_vpage_cr3();
-	//printf("cr3: %p\n", cr3);
-	
+	printf("cr3: %p\n", cr3[1]);
+
 	// You can add other initialization here as necessary
+
+	//FILE* output;
+
+    //int V_addrs = fopen("../bin/virtual.txt", "a");
+
 }
 
 //
@@ -39,7 +54,22 @@ void initialize_vmanager(int policy)
 //
 int translate_virtual_address(unsigned int v_addr)
 {
-	//TODO
+	//TODO Ex. "0x82e2e665"
+
+	int offset;
+
+	offset = v_addr & 0b00000000000000000000111111111111;
+	pt2_ptr = v_addr & 0b00000000001111111111000000000000;
+	pt2_ptr = pt2_ptr >> 12;
+	pt1_ptr = v_addr & 0b11111111110000000000000000000000;
+	pt1_ptr = pt1_ptr >> 22;
+
+
+	printf("num: %x\n", v_addr);
+	printf("offset: %x\n", offset);
+	printf("pt2: %d\n", pt2_ptr);
+	printf("pt1: %d\n", pt1_ptr);
+
 	return -1;
 }
 

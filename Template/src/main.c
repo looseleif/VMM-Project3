@@ -22,6 +22,14 @@ int main(int argc, char* argv[])
 	//	Make sure to populate the TLB as you go!
 	//	Output the TLB at the start and end along with the hit rate
 	
+	unsigned int x = 0xaf199f2d;
+
+	printf("hello\n");
+
+	translate_virtual_address(x);
+
+	printf("hello");
+
 	//Free the page table
 	free_resources();
 	return 0;
