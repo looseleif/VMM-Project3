@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 
 	print_physical_address(translation_frame2, tran_offset2);
 
-	printf("hello\n");
+	//printf("hello\n");
 
 	populate_tlb(x,translation_frame1);
 	populate_tlb(x,translation_frame1);
@@ -54,8 +54,15 @@ int main(int argc, char* argv[])
 	populate_tlb(x,translation_frame1);
 	populate_tlb(x,translation_frame1);
 	populate_tlb(y,translation_frame2);
+	populate_tlb(y,translation_frame2);
+	populate_tlb(y,translation_frame2);
+	populate_tlb(y,translation_frame2);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
 
-	printf("hello\n");
+	//printf("hello\n");
 
 	printf("get tlb7: %x\n", get_tlb_entry(7));
 	printf("get tlb6: %x\n", get_tlb_entry(6));
