@@ -39,22 +39,70 @@ void initialize_vmanager(int policy)
 		FIFO_policy = false;
 	// Set base pointer to page table
 	cr3 = get_vpage_cr3();
-	printf("cr3: %p\n", cr3[1]);
+	//printf("cr3: %p\n", cr3[1]);
 
 	// You can add other initialization here as necessary
+
+	/*int i;
+	int j;
+	int counter1 = 1;
+	int counter2 = 1;
+
+	int doubleCheck = 0;
+	int dubCount = 0 ;
+
+	for(i=0; i <  1023; i++){
+
+		if(cr3[i]!=NULL){ 
+			//counter1++;
+			printf("pointer: %p\n", cr3[i]);
+			
+			for(j = 0; j < 1023; j++){
+			
+			if(cr3[i][j]!=-1){
+				printf("value: %x\n", cr3[i][j]);
+
+				//printf("c1:%d\n", i);
+				//printf("c2:%d\n", j);
+
+				counter2++;
+
+				if(doubleCheck){
+
+				printf("double found at: %d\n",counter1);
+				dubCount++;
+				}
+
+				doubleCheck = 1;
+				}
+
+
+			
+			}
+
+			doubleCheck = 0;
+
+		}
+
+	}
+
+	//printf("c1:%d\n", counter1);
+	printf("c2:%d\n", counter2);
+	printf("dub:%d\n", dubCount);
 
 	//FILE* output;
 
     //int V_addrs = fopen("../bin/virtual.txt", "a");
-
+	*/
 }
 
 //
 // The implementation of the following functions is required
 //
+
 int translate_virtual_address(unsigned int v_addr)
 {
-	//TODO Ex. "0x82e2e665"
+	//TODO
 
 	int offset;
 
@@ -65,18 +113,67 @@ int translate_virtual_address(unsigned int v_addr)
 	pt1_ptr = pt1_ptr >> 22;
 
 
-	printf("num: %x\n", v_addr);
-	printf("offset: %x\n", offset);
-	printf("pt2: %d\n", pt2_ptr);
-	printf("pt1: %d\n", pt1_ptr);
+	//printf("num: %x\n", v_addr);
+	//printf("offset: %x\n", offset);
+	//printf("pt2: %d\n", pt2_ptr);
+	//printf("pt1: %d\n", pt1_ptr);
+
+	unsigned int result = 0;
+
+	//printf("value 2 retrieve: %x\n", cr3[pt1_ptr][pt2_ptr]);
+
+	if(cr3[pt1_ptr] != NULL){
+
+		result = cr3[pt1_ptr][pt2_ptr];
+
+		if(result != -1){
+
+			return result;
+
+		}
+
+	}
 
 	return -1;
+	
 }
 
 void print_physical_address(int frame, int offset)
 {
-	//TODO
+	
+	unsigned int output = 0;
+	unsigned int temp;
+
+	output = (frame<<12) | (offset);
+
+	
+
+	int count = 0;
+
+	temp = output;
+
+	while(temp>0){
+
+		temp = temp / 16;
+		count++;
+		
+		//printf("translated step address: %x\n", output);
+
+	}
+
+	printf("0x");
+
+	int i;
+
+	for (i = 0; i < 8-count; i++)
+	{
+		printf("0");
+	}
+
+	printf("%x\n", output);
+
 	return;
+
 }
 
 int get_tlb_entry(int n)
