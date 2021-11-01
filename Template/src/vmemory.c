@@ -15,9 +15,6 @@
 
 bool FIFO_policy = true;
 int **cr3;
-//
-// You can declare global variables necessary for your TLB implementation here
-//
 
 int offset;
 int first_addr;
@@ -25,13 +22,17 @@ int second_addr;
 int pt2_ptr;
 unsigned int pt1_ptr;
 
-//
-// More static helper functions can be implemented here
-//
+int TLB[8][2];
+
+int count_TLB = 0;
+
+// TLB[x][0] is the VA
+// TLB[x][1] is the PA
 
 
 // The implementation of get_vpage_cr3 is provided in 
 // an object file, so no need to re-implement it
+
 void initialize_vmanager(int policy) 
 {
 	// Set LFU policy when passed as a parameter
@@ -43,57 +44,12 @@ void initialize_vmanager(int policy)
 
 	// You can add other initialization here as necessary
 
-	/*int i;
-	int j;
-	int counter1 = 1;
-	int counter2 = 1;
-
-	int doubleCheck = 0;
-	int dubCount = 0 ;
-
-	for(i=0; i <  1023; i++){
-
-		if(cr3[i]!=NULL){ 
-			//counter1++;
-			printf("pointer: %p\n", cr3[i]);
-			
-			for(j = 0; j < 1023; j++){
-			
-			if(cr3[i][j]!=-1){
-				printf("value: %x\n", cr3[i][j]);
-
-				//printf("c1:%d\n", i);
-				//printf("c2:%d\n", j);
-
-				counter2++;
-
-				if(doubleCheck){
-
-				printf("double found at: %d\n",counter1);
-				dubCount++;
-				}
-
-				doubleCheck = 1;
-				}
-
-
-			
-			}
-
-			doubleCheck = 0;
-
-		}
-
-	}
-
 	//printf("c1:%d\n", counter1);
-	printf("c2:%d\n", counter2);
-	printf("dub:%d\n", dubCount);
 
 	//FILE* output;
 
     //int V_addrs = fopen("../bin/virtual.txt", "a");
-	*/
+
 }
 
 //
@@ -178,25 +134,65 @@ void print_physical_address(int frame, int offset)
 
 int get_tlb_entry(int n)
 {
-	//TODO
+	
+	if(TLB[n][1] != -1){
+
+		return TLB[n][1];
+
+	}
+
 	return -1;
+
 }
 
 void populate_tlb(int v_addr, int p_addr) 
 {
 	//TODO
+	
+	int counter;
+
+	int num = v_addr & 0b11111111111111111111000000000000;
+
+	// first input comes in the 
+
+	if(count_TLB==8){ // given TLB is full;
+
+		for(counter=7; counter>0; counter--){
+
+			TLB[counter][0] = TLB[counter-1][0];
+			TLB[counter][1] = TLB[counter-1][1];
+
+		}
+
+		TLB[0][0] = num;
+		TLB[0][1] = p_addr;
+
+	} else {
+
+		TLB[7-count_TLB][0] = num;
+		TLB[7-count_TLB][1] = p_addr;
+
+		count_TLB++;
+
+	}
+
 	return;
+
 }
 
 float get_hit_ratio()
 {
+	
 	//TODO
 	return 0.0;
+
 }
 
 // Write to the file denoted by OUT_TLB
 void print_tlb()
 {
+
 	//TODO
 	return;
+
 }

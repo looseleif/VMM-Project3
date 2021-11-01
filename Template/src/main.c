@@ -22,17 +22,52 @@ int main(int argc, char* argv[])
 	//	Make sure to populate the TLB as you go!
 	//	Output the TLB at the start and end along with the hit rate
 	
+	// test 1
+
 	unsigned int x = 0xaf199f2d;
 
-	//printf("hello\n");
+	int tran_offset1 = x & 0b00000000000000000000111111111111;
 
-	//printf("%x\n",translate_virtual_address(x));
+	int translation_frame1 = translate_virtual_address(x);
 
-	int tran_offset = x & 0b00000000000000000000111111111111;
+	print_physical_address(translation_frame1, tran_offset1);
 
-	int translation_frame = translate_virtual_address(x);
+	// test 2
 
-	print_physical_address(translation_frame, tran_offset);
+	unsigned int y = 0x559b5978;
+
+	int tran_offset2 = x & 0b00000000000000000000111111111111;
+
+	int translation_frame2 = translate_virtual_address(y);
+
+	print_physical_address(translation_frame2, tran_offset2);
+
+	printf("hello\n");
+
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(x,translation_frame1);
+	populate_tlb(y,translation_frame2);
+
+	printf("hello\n");
+
+	printf("get tlb7: %x\n", get_tlb_entry(7));
+	printf("get tlb6: %x\n", get_tlb_entry(6));
+	printf("get tlb5: %x\n", get_tlb_entry(5));
+	printf("get tlb4: %x\n", get_tlb_entry(4));
+	printf("get tlb3: %x\n", get_tlb_entry(3));
+	printf("get tlb2: %x\n", get_tlb_entry(2));
+	printf("get tlb1: %x\n", get_tlb_entry(1));
+	printf("get tlb0: %x\n", get_tlb_entry(0));
+
+
+	//printf("%d %d\n", TLB[7][0], TLB[7][1]);
 
 	//Free the page table
 	free_resources();
