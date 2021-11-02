@@ -8,10 +8,6 @@
 #include "vmemory.h"
 
 #define OUT_TLB "../bin/tlb_out.txt"
-#define VIR_ADDR "../bin/virtual.txt"
-
-#define FST_PT "../bin/first_pt.txt"
-#define SEC_PT "../bin/second_pt.txt"
 
 bool FIFO_policy = true;
 int **cr3;
@@ -22,13 +18,15 @@ int second_addr;
 int pt2_ptr;
 unsigned int pt1_ptr;
 
+double attempts = 0;
+double hits = 0;
+
 int TLB[8][2];
 
 int count_TLB = 0;
 
 // TLB[x][0] is the VA
 // TLB[x][1] is the PA
-
 
 // The implementation of get_vpage_cr3 is provided in 
 // an object file, so no need to re-implement it
@@ -42,14 +40,6 @@ void initialize_vmanager(int policy)
 	cr3 = get_vpage_cr3();
 	//printf("cr3: %p\n", cr3[1]);
 
-	// You can add other initialization here as necessary
-
-	//printf("c1:%d\n", counter1);
-
-	//FILE* output;
-
-    //int V_addrs = fopen("../bin/virtual.txt", "a");
-
 }
 
 //
@@ -58,7 +48,6 @@ void initialize_vmanager(int policy)
 
 int translate_virtual_address(unsigned int v_addr)
 {
-	//TODO
 
 	int offset;
 
@@ -68,15 +57,7 @@ int translate_virtual_address(unsigned int v_addr)
 	pt1_ptr = v_addr & 0b11111111110000000000000000000000;
 	pt1_ptr = pt1_ptr >> 22;
 
-
-	//printf("num: %x\n", v_addr);
-	//printf("offset: %x\n", offset);
-	//printf("pt2: %d\n", pt2_ptr);
-	//printf("pt1: %d\n", pt1_ptr);
-
 	unsigned int result = 0;
-
-	//printf("value 2 retrieve: %x\n", cr3[pt1_ptr][pt2_ptr]);
 
 	if(cr3[pt1_ptr] != NULL){
 
@@ -100,9 +81,7 @@ void print_physical_address(int frame, int offset)
 	unsigned int output = 0;
 	unsigned int temp;
 
-	output = (frame<<12) | (offset);
-
-	
+	output = ( frame<<12 ) | ( offset );
 
 	int count = 0;
 
@@ -112,8 +91,6 @@ void print_physical_address(int frame, int offset)
 
 		temp = temp / 16;
 		count++;
-		
-		//printf("translated step address: %x\n", output);
 
 	}
 
@@ -135,11 +112,28 @@ void print_physical_address(int frame, int offset)
 int get_tlb_entry(int n)
 {
 	
-	if(TLB[n][1] != -1){
+	attempts++;
+	
+	int i = 0;
 
-		return TLB[n][1];
+	for(i=0; i<8; i++){
+
+		if(TLB[i][0]==n){
+			
+			hits++;
+			
+			return TLB[i][1];
+
+		}
 
 	}
+
+	/*	if(TLB[n][1] != -1){
+
+			return TLB[n][1];
+
+		}
+	*/
 
 	return -1;
 
@@ -147,11 +141,12 @@ int get_tlb_entry(int n)
 
 void populate_tlb(int v_addr, int p_addr) 
 {
-	//TODO
-	
+
 	int counter;
 
 	int num = v_addr & 0b11111111111111111111000000000000;
+
+	num = num >> 12;
 
 	// first input comes in the 
 
@@ -183,8 +178,7 @@ void populate_tlb(int v_addr, int p_addr)
 float get_hit_ratio()
 {
 	
-	//TODO
-	return 0.0;
+	return hits/attempts;
 
 }
 
@@ -192,7 +186,22 @@ float get_hit_ratio()
 void print_tlb()
 {
 
-	//TODO
+	FILE* output;
+
+    output = fopen(OUT_TLB, "a");
+
+	int i;
+
+	for(i = 0; i<8; i++){
+
+		fprintf(output, "0x%x 0x%x\n", TLB[i][0], TLB[i][1]);
+
+	}
+
+	fprintf(output, "\n");
+
+    fclose(output);
+
 	return;
 
 }

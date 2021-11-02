@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 
 	unsigned int y = 0x559b5978;
 
-	int tran_offset2 = x & 0b00000000000000000000111111111111;
+	int tran_offset2 = y & 0b00000000000000000000111111111111;
 
 	int translation_frame2 = translate_virtual_address(y);
 
@@ -48,22 +48,27 @@ int main(int argc, char* argv[])
 	populate_tlb(x,translation_frame1);
 	populate_tlb(x,translation_frame1);
 	populate_tlb(x,translation_frame1);
+	/*populate_tlb(x,translation_frame1);
 	populate_tlb(x,translation_frame1);
 	populate_tlb(x,translation_frame1);
 	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
+
+	populate_tlb(y,translation_frame2);
+	populate_tlb(y,translation_frame2);
+	populate_tlb(y,translation_frame2);
+	populate_tlb(y,translation_frame2);*/
 	populate_tlb(y,translation_frame2);
 	populate_tlb(y,translation_frame2);
 	populate_tlb(y,translation_frame2);
 	populate_tlb(y,translation_frame2);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
+
+
+
+
 
 	//printf("hello\n");
 
+	/*
 	printf("get tlb7: %x\n", get_tlb_entry(7));
 	printf("get tlb6: %x\n", get_tlb_entry(6));
 	printf("get tlb5: %x\n", get_tlb_entry(5));
@@ -71,8 +76,10 @@ int main(int argc, char* argv[])
 	printf("get tlb3: %x\n", get_tlb_entry(3));
 	printf("get tlb2: %x\n", get_tlb_entry(2));
 	printf("get tlb1: %x\n", get_tlb_entry(1));
-	printf("get tlb0: %x\n", get_tlb_entry(0));
+	printf("get tlb0: %x\n", get_tlb_entry(-1));
+	*/
 
+	print_tlb();
 
 	//printf("%d %d\n", TLB[7][0], TLB[7][1]);
 
