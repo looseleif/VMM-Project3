@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
 	}
 
 	int policy = (argc == 2) ? 1:0;
+
 	initialize_vmanager(policy);
 
 	//TODO: Translate all of the virtual addresses in INPUT_FILE
@@ -24,49 +25,42 @@ int main(int argc, char* argv[])
 	
 	// test 1
 
-	unsigned int x = 0xaf199f2d;
+	//unsigned int x = 0xaf199f2d;
 
-	int tran_offset1 = x & 0b00000000000000000000111111111111;
+	//int tran_offset1 = x & 0b00000000000000000000111111111111;
 
-	int translation_frame1 = translate_virtual_address(x);
+	//int translation_frame1 = translate_virtual_address(x);
 
-	print_physical_address(translation_frame1, tran_offset1);
+	//print_physical_address(translation_frame1, tran_offset1);
+
+	//int x_cut = (0b11111111111111111111000000000000 & x) >> 12;
 
 	// test 2
 
-	unsigned int y = 0x559b5978;
+	//unsigned int y = 0x559b5978;
 
-	int tran_offset2 = y & 0b00000000000000000000111111111111;
+	//int tran_offset2 = y & 0b00000000000000000000111111111111;
 
-	int translation_frame2 = translate_virtual_address(y);
+	//int translation_frame2 = translate_virtual_address(y);
 
-	print_physical_address(translation_frame2, tran_offset2);
+	//print_physical_address(translation_frame2, tran_offset2);
 
-	//printf("hello\n");
+	//int y_cut = (0b11111111111111111111000000000000 & y) >> 12;
 
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	/*populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-	populate_tlb(x,translation_frame1);
-
-	populate_tlb(y,translation_frame2);
-	populate_tlb(y,translation_frame2);
-	populate_tlb(y,translation_frame2);
-	populate_tlb(y,translation_frame2);*/
-	populate_tlb(y,translation_frame2);
-	populate_tlb(y,translation_frame2);
-	populate_tlb(y,translation_frame2);
-	populate_tlb(y,translation_frame2);
-
-
-
-
-
-	//printf("hello\n");
+	/*
+	populate_tlb(x_cut,translation_frame1);
+	populate_tlb(x_cut,translation_frame1);
+	populate_tlb(x_cut,translation_frame1);
+	populate_tlb(x_cut,translation_frame1);
+	populate_tlb(y_cut,translation_frame2);
+	populate_tlb(y_cut,translation_frame2);
+	populate_tlb(y_cut,translation_frame2);
+	populate_tlb(y_cut,translation_frame2);
+	populate_tlb(x_cut,translation_frame1);
+	populate_tlb(x_cut,translation_frame1);
+	populate_tlb(x_cut,translation_frame1);
+	populate_tlb(x_cut,translation_frame1);
+	*/
 
 	/*
 	printf("get tlb7: %x\n", get_tlb_entry(7));
@@ -79,9 +73,62 @@ int main(int argc, char* argv[])
 	printf("get tlb0: %x\n", get_tlb_entry(-1));
 	*/
 
+	//print_tlb();
+
+	//get_tlb_entry(x_cut);
+	//get_tlb_entry(y_cut);
+
+	//printf("%f\n", get_hit_ratio());
+
+	// --- BEGIN PROCEDURE ---
+
+	FILE* input;
+
+    input = fopen(INPUT_FILE, "r");
+
+	//char lineToRead[11];
+
+	unsigned int addr_ptr;
+
+	//fgets(lineToRead,3,input)!=NULL
+
 	print_tlb();
 
-	//printf("%d %d\n", TLB[7][0], TLB[7][1]);
+	int count = 0;
+
+	while(fscanf(input, " 0x%x", &addr_ptr)!=-1){
+		
+		//count++;
+		//printf("%d\n",count);
+		
+
+		int tlb_return;
+
+		unsigned int x = addr_ptr;
+
+		int x_cut = (0b11111111111111111111000000000000 & x) >> 12;
+
+		int tran_offset = x & 0b00000000000000000000111111111111;
+
+		if((tlb_return = get_tlb_entry(x_cut))==-1){
+
+			int translation_frame = translate_virtual_address(x);
+			
+			populate_tlb(x_cut,translation_frame);
+
+			print_physical_address(translation_frame, tran_offset);
+			
+		} else {
+
+			print_physical_address(tlb_return, tran_offset);
+
+		}
+
+	}
+
+	print_tlb();
+
+	printf("%f\n", get_hit_ratio());
 
 	//Free the page table
 	free_resources();

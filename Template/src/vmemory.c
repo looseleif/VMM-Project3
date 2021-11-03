@@ -18,8 +18,8 @@ int second_addr;
 int pt2_ptr;
 unsigned int pt1_ptr;
 
-double attempts = 0;
-double hits = 0;
+float attempts = 0;
+float hits = 0;
 
 int TLB[8][2];
 
@@ -33,12 +33,28 @@ int count_TLB = 0;
 
 void initialize_vmanager(int policy) 
 {
+
+	FILE* output;
+
+    output = fopen(OUT_TLB, "w");
+	
+	fclose(output);
+
 	// Set LFU policy when passed as a parameter
 	if (policy)
 		FIFO_policy = false;
 	// Set base pointer to page table
 	cr3 = get_vpage_cr3();
 	//printf("cr3: %p\n", cr3[1]);
+
+	int j;
+
+	for(j = 0; j<8; j++){
+
+		TLB[j][0] = -1;
+		TLB[j][1] = -1;
+
+	}
 
 }
 
@@ -128,13 +144,6 @@ int get_tlb_entry(int n)
 
 	}
 
-	/*	if(TLB[n][1] != -1){
-
-			return TLB[n][1];
-
-		}
-	*/
-
 	return -1;
 
 }
@@ -143,12 +152,6 @@ void populate_tlb(int v_addr, int p_addr)
 {
 
 	int counter;
-
-	int num = v_addr & 0b11111111111111111111000000000000;
-
-	num = num >> 12;
-
-	// first input comes in the 
 
 	if(count_TLB==8){ // given TLB is full;
 
@@ -159,12 +162,12 @@ void populate_tlb(int v_addr, int p_addr)
 
 		}
 
-		TLB[0][0] = num;
+		TLB[0][0] = v_addr;
 		TLB[0][1] = p_addr;
 
 	} else {
 
-		TLB[7-count_TLB][0] = num;
+		TLB[7-count_TLB][0] = v_addr;
 		TLB[7-count_TLB][1] = p_addr;
 
 		count_TLB++;
