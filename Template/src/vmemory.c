@@ -147,15 +147,15 @@ void print_physical_address(int frame, int offset)
 
 	// includes appending of 0's given frame or offset is underfilled
 
-	printf("0x");
-
 	int i;
 
 	if(frame==-1){
 
-		frame = 0xfffff;
+		printf("-1\n");
 
-	}
+	} else{
+
+		printf("0x");
 
 	for (i = 0; i < 5-countFRAME; i++)
 	{
@@ -170,6 +170,8 @@ void print_physical_address(int frame, int offset)
 	}
 
 	printf("%x\n", offset);
+
+	}
 
 	return;
 
